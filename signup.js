@@ -7,27 +7,33 @@ const firebaseConfig = {
     messagingSenderId: "487136113486",
     appId: "1:487136113486:web:c034ef534c5becce29a41f"
   };
-  function redirect_sign() {
-    window.location.href = 'signup.html'; // Change 'signup.html' to the URL of your signup page
-  }
+  
   firebase.initializeApp(firebaseConfig);
   
   const auth = firebase.auth();
   
-  
-  document.getElementById('loginForm').addEventListener('submit', function(event) {
+  document.getElementById('signupForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevent form submission
   
+    var name = document.getElementById('name').value;
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
   
-    // Sign in with email and password
-    auth.signInWithEmailAndPassword(email, password)
+    // Sign up with email and password
+    auth.createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        // Signed in
+        // Signed up successfully
         var user = userCredential.user;
-        document.getElementById('message').innerText = 'Login successful!';
-        window.location.href ="Home.html";
+        // Update user's display name
+        user.updateProfile({
+          displayName: name
+        }).then(function() {
+          // Update successful
+          document.getElementById('message').innerText = 'Sign up successful!';
+        }).catch(function(error) {
+          // An error occurred
+          document.getElementById('message').innerText = error.message;
+        });
       })
       .catch((error) => {
         var errorCode = error.code;
@@ -35,4 +41,4 @@ const firebaseConfig = {
         document.getElementById('message').innerText = errorMessage;
       });
   });
- 
+  
